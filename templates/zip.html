@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UFT-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}"/>
+        <title>Flask Weather App</title>
+    </head>
+    <body>
+        <div class="zip">
+            <b>Weather using Zipcode</b>
+            <p>
+                <span class="subtitle">Zipcode: {{weather.zipcode}} </span> <br>
+                <span class="subtitle">City: {{weather.city}} </span> <br>
+                <span class="subtitle">State: {{weather.state}} </span> <br>
+                <span class="subtitle">Temperature in Farhenheit: {{weather.ftemp}} </span> <br>
+                <span class="subtitle">Temperature in Celsius: {{weather.ctemp}} </span> <br>
+
+            </p>
+        </div>
+    </body>
+</html>

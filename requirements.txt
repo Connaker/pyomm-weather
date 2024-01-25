@@ -1,0 +1,6 @@
+Flask
+requests
+pyowm
+geocoder
+pyzipcode
+geopy
