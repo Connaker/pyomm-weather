@@ -1,7 +1,13 @@
-FROM python
+FROM  python:3.10-slim-buster
 
-COPY . .
+    WORKDIR /app
 
-RUN pip install --no-cache-dir -r requirements.txt
+    COPY requirements.txt requirements.txt
+    RUN pip3 install -r requirements.txt
 
-CMD gunicorn -b 0.0.0.0:80 flaskapp:app --reload
+    COPY ./src .
+
+    EXPOSE 5000
+
+    ENTRYPOINT ["python3"]
+    CMD ["app.py"]
