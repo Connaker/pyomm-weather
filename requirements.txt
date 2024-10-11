@@ -1,8 +1,6 @@
-Flask
-gunicorn
-re
-requests
-pyowm
-geocoder
-pyzipcode
-geopy
+Flask==3.0.1
+requests==2.31.0
+pyowm==3.3.0
+geocoder==1.38.1
+pyzipcode==3.0.1
+geopy==2.4.1
