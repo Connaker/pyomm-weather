@@ -7,4 +7,4 @@ build:
 run: 
   command: python app.py
   network:
-    port: 80
+    port: 8080
