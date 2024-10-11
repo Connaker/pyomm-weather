@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UFT-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}"/>
+        <title>Flask Weather App</title>
+    </head>
+    <body>
+        <div class="city">{{weather.city}}, {{weather.state}}</div>
+        {% if weather.condition == "Mist" %}
+        <div class="rain">
+        {% else %}
+        <div class="norm">
+        {% endif %}
+            <p>
+                <span class="title">{{weather.ftemp}}&#8457;, {{weather.ctemp}}&#8451; </span> <br>
+                <span class="subtitle">{{weather.condition}}</span>
+            </p>
+        </div>
+            <p>
+                <h5>Look up weather by Zipcode or City,State:</h5>
+                <form action="/zip" method="post">
+                    <input autocomplete="off" autofocus name="zipcode" placeholder="Zipcode" type="number">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </p>
+    </body>
+</html>
