@@ -1,4 +1,5 @@
 Flask
+re
 requests
 pyowm
 geocoder
