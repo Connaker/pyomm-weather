@@ -4,6 +4,7 @@ build:
   commands:
     build:
       - pip install -r requirements.txt
+      - pip install urllib3==1.26.15
 run: 
   command: python app.py
   network:
