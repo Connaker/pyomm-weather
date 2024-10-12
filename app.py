@@ -9,12 +9,12 @@ from geopy.geocoders import Nominatim
 
 app = Flask(__name__)
 
-owm = pyowm.OWM('')
+owm = pyowm.OWM("8f535614e6c42132a9290ce12a4e5e69")
 mgr=owm.weather_manager()
 
 
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     location = geocoder.ip('me').latlng
     my_lat = location[0]
@@ -23,7 +23,7 @@ def home():
     lat = [float(my_lat)]
     lon = [float(my_lon)]
     coordinates = str(my_lat)+", "+str(my_lon)
-    geolocator = Nominatim(user_agent="geoapi")
+    geolocator = Nominatim(user_agent="mcflaskweatherapp")
     location = geolocator.reverse(coordinates)
     address = location.raw['address']
     city = address.get('town')
@@ -46,9 +46,9 @@ def home():
     }
     print(city)
 
-    return render_template('weather.html', weather = weather)
+    return render_template("weather.html", weather=weather)
 
-@app.route('/zip', methods = ['GET', 'POST'])
+@app.route('/zip', methods=['GET', 'POST'])
 def zip():
     # Zip Code
     if request.method == "GET":
@@ -85,4 +85,4 @@ def zip():
         return render_template("zip.html", weather=weather)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
