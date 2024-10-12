@@ -9,7 +9,7 @@ from geopy.geocoders import Nominatim
 
 app = Flask(__name__)
 
-owm = pyowm.OWM('')
+owm = pyowm.OWM('8f535614e6c42132a9290ce12a4e5e69')
 mgr=owm.weather_manager()
 
 
