@@ -46,7 +46,7 @@ def home():
     }
     print(city)
 
-    return render_template('weather.html', weather = weather)
+    return render_template('weather.html', weather=weather)
 
 @app.route('/zip', methods=['GET', 'POST'])
 def zip():
