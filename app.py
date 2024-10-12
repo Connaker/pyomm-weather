@@ -3,7 +3,7 @@ import geocoder
 import re
 from flask import Flask, flash, redirect, render_template, request, session
 from pyzipcode import ZipCodeDatabase
-from geopy.geocoders import Photon
+from geopy.geocoders import Nominatim
 
 
 
@@ -23,7 +23,7 @@ def home():
     lat = [float(my_lat)]
     lon = [float(my_lon)]
     coordinates = str(my_lat)+", "+str(my_lon)
-    geolocator = Photon(user_agent="geoapi")
+    geolocator = Nominatim(user_agent="mcflaskweatherapp")
     location = geolocator.reverse(coordinates)
     address = location.raw['address']
     city = address.get('town')
