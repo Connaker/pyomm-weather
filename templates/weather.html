@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UFT-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')}}"/>
-        <title>Flask Weather App</title>
-    </head>
-    <body>
-        <div class="city">{{weather.city}}, {{weather.state}}</div>
-        {% if weather.condition == "Mist" %}
-        <div class="rain">
-        {% else %}
-        <div class="norm">
-        {% endif %}
-            <p>
-                <span class="title">{{weather.ftemp}}&#8457;, {{weather.ctemp}}&#8451; </span> <br>
-                <span class="subtitle">{{weather.condition}}</span>
-            </p>
-        </div>
-            <p>
-                <h5>Look up weather by Zipcode or City,State:</h5>
-                <form action="/zip" method="post">
-                    <input autocomplete="off" autofocus name="zipcode" placeholder="Zipcode" type="number">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </p>
-    </body>
-</html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+    .weather-card {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #f7f7f7;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+      <div class="weather-card">
+        <form action="/zip" method="post">
+          <div class="form-group">
+            <label for="location-input">Location:</label>
+            <input autocomplete="off" autofocus name="zipcode" type="text" class="form-control" id="location-input" placeholder="Ex: New York">
+          </div>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <div id="weather-info" class="mt-4"></div>
+      </div>
+    </div>

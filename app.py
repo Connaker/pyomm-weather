@@ -34,6 +34,7 @@ def home():
     ftemp = w.temperature(unit='fahrenheit')['temp']
     ctemp = w.temperature(unit='celsius')['temp']
     condition = w.status
+    icon = w.weather_icon_url()
 
     weather = {
         'lat': lat,
@@ -43,6 +44,8 @@ def home():
         'ftemp': ftemp,
         'ctemp': ctemp,
         'condition': condition,
+        'icon': icon,
+        
     }
     print(city)
 
@@ -73,6 +76,7 @@ def zip():
         w = observation.weather
         ftemp = w.temperature(unit='fahrenheit')['temp']
         ctemp = w.temperature(unit='celsius')['temp']
+        icon = w.weather_icon_url()
 
         weather = {
         'zipcode': zipcode,
@@ -81,6 +85,7 @@ def zip():
         'place': place,
         'ftemp': ftemp,
         'ctemp': ctemp,
+        'icon': icon,
         }
         return render_template("zip.html", weather=weather)
 
