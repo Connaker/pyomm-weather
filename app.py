@@ -14,7 +14,7 @@ mgr=owm.weather_manager()
 
 
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     location = geocoder.ip('me').latlng
     my_lat = location[0]
@@ -48,7 +48,7 @@ def home():
 
     return render_template('weather.html', weather = weather)
 
-@app.route('/zip', methods = ['GET', 'POST'])
+@app.route('/zip', methods=['GET', 'POST'])
 def zip():
     # Zip Code
     if request.method == "GET":
