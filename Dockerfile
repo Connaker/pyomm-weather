@@ -7,4 +7,8 @@ FROM  python:3.10-slim-buster
 
     COPY . .
 
-    CMD ["python", "./app.py"]
+    EXPOSE 5000
+
+    ENTRYPOINT ["python3"]
+    
+    CMD ["./app.py"]
