@@ -22,13 +22,19 @@
 <body>
     <div class="container">
       <div class="weather-card">
-        <form action="/zip" method="post">
+        <form action="/search" method="post">
           <div class="form-group">
             <label for="location-input">Location:</label>
-            <input autocomplete="off" autofocus name="zipcode" type="text" class="form-control" id="location-input" placeholder="Ex: New York">
+            <input autocomplete="off" autofocus name="response" type="text" class="form-control" id="location-input" placeholder="Ex: New York,NY,US or Zip Code">
           </div>
           <button type="submit" class="btn btn-primary">Search</button>
         </form>
         <div id="weather-info" class="mt-4"></div>
+        <h2>Weather Basics</h2>
+        <p> Start by entering a City or Zip in search field.
+          You can search for a city using "City Name, Country Code" query like "London, GB".
+          For US state, queries must be formated like "New York, NY, US" due to nature of the Openweather API.
+          Please note that all queries must have qoutations.
+        </p>
       </div>
     </div>

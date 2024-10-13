@@ -1,93 +1,76 @@
-import pyowm
-import geocoder
-import re
-from flask import Flask, flash, redirect, render_template, request, session
+
+from pyowm import OWM 
+from pyowm.commons.exceptions import NotFoundError
+from flask import Flask, render_template, request
 from pyzipcode import ZipCodeDatabase
-from geopy.geocoders import Nominatim
+import ast
 
 
 
 app = Flask(__name__)
+owm = OWM("8f535614e6c42132a9290ce12a4e5e69")
 
-owm = pyowm.OWM("8f535614e6c42132a9290ce12a4e5e69")
-mgr=owm.weather_manager()
+@app.route('/')
+def index():
+    return render_template('weather.html')
 
-
-
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    location = geocoder.ip('me').latlng
-    my_lat = location[0]
-    my_lon = location[1]
-
-    lat = [float(my_lat)]
-    lon = [float(my_lon)]
-    coordinates = str(my_lat)+", "+str(my_lon)
-    geolocator = Nominatim(user_agent="mcflaskweatherapp")
-    location = geolocator.reverse(coordinates)
-    address = location.raw['address']
-    city = address.get('town')
-    state = address.get('state')
-
-    observation = mgr.weather_at_coords(my_lat,my_lon)
-    w = observation.weather
-    ftemp = w.temperature(unit='fahrenheit')['temp']
-    ctemp = w.temperature(unit='celsius')['temp']
-    condition = w.status
-    icon = w.weather_icon_url()
-
-    weather = {
-        'lat': lat,
-        'lon': lon,
-        'city': city,
-        'state': state,
-        'ftemp': ftemp,
-        'ctemp': ctemp,
-        'condition': condition,
-        'icon': icon,
+@app.route('/search', methods=['POST'])
+def search():
+    search = request.form['response']
+    if search == '':
+        e = 'Field cannot be blank'
+        return render_template('invalid.html', error=e) 
+    n = eval(search)
+    if type(n) == int:
+            if len(str(n)) == 5:
+                 zcdb = ZipCodeDatabase()
+                 city = zcdb[n].city
+                 state = zcdb[n].state
+                 place = city+','+state+','+"US"
+                 mgr=owm.weather_manager()
+                 observation = mgr.weather_at_place(place)
+                 w = observation.weather
+                 ftemp = w.temperature(unit='fahrenheit')['temp']
+                 ctemp = w.temperature(unit='celsius')['temp']
+                 descript = w.detailed_status
+                 
+                 weather = {
+                      'zipcode': n,
+                      'current': descript,
+                      'city': city,
+                      'state': state,
+                      'place': place,
+                      'ftemp': ftemp,
+                      'ctemp': ctemp,
+                    }
+                 return render_template("zip.html", weather=weather)
+                # e = 'Field is valid Zip'
+                # return render_template('invalid.html', error=e)
+            else:
+                e = 'Field is invalid Zip'
+                return render_template('invalid.html', error=e)
+    else:
+        # loc = str(n)
+        # e = loc
+        try:
+            location = ast.literal_eval(search)
+            mgr=owm.weather_manager()
+            observation = mgr.weather_at_place(location)
+            w = observation.weather
+            ftemp = w.temperature(unit='fahrenheit')['temp']
+            ctemp = w.temperature(unit='celsius')['temp']
+            descript = w.detailed_status
+            weather = {
+                'location': location,
+                'current': descript,
+                'ftemp': ftemp,
+                'ctemp': ctemp,
+            }
+            return render_template("city.html", weather=weather)
         
-    }
-    print(city)
-
-    return render_template("weather.html", weather=weather)
-
-@app.route('/zip', methods=['GET', 'POST'])
-def zip():
-    # Zip Code
-    if request.method == "GET":
-        return render_template("weather.html")
-
-    if request.method == "POST":
-        if not request.form.get("zipcode"):
-            return render_template("invalid.html")
-        zipcode = request.form.get("zipcode")
-
-        if len(str(zipcode)) > 5:
-            return render_template("invalid.html")
-
-        if len(str(zipcode)) <= 1:
-            return render_template("invalid.html")
-        
-        zcdb = ZipCodeDatabase()
-        city = zcdb[zipcode].city
-        state = zcdb[zipcode].state
-        place = city+','+state
-        observation = mgr.weather_at_place('place')
-        w = observation.weather
-        ftemp = w.temperature(unit='fahrenheit')['temp']
-        ctemp = w.temperature(unit='celsius')['temp']
-        icon = w.weather_icon_url()
-
-        weather = {
-        'zipcode': zipcode,
-        'city': city,
-        'state': state,
-        'place': place,
-        'ftemp': ftemp,
-        'ctemp': ctemp,
-        'icon': icon,
-        }
-        return render_template("zip.html", weather=weather)
-
+        except NotFoundError:
+             e = search,'+','not in regsitry. Please check your input'
+             return render_template("invalid.html",error=e)
+         
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
