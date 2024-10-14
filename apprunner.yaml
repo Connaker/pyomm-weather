@@ -11,5 +11,5 @@ run:
     port: 5000
   secrets:
     - name: API
-      value: arn:aws:ssm:us-east-2:432367782265:parameter/openweatherapi
+      value-from: arn:aws:ssm:us-east-2:432367782265:parameter/openweatherapi
     
