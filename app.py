@@ -4,11 +4,11 @@ from pyowm.commons.exceptions import NotFoundError
 from flask import Flask, render_template, request
 from pyzipcode import ZipCodeDatabase
 import ast
-
+import os 
 
 
 app = Flask(__name__)
-owm = OWM("8f535614e6c42132a9290ce12a4e5e69")
+owm = OWM(os.environ['API'])
 
 @app.route('/')
 def index():

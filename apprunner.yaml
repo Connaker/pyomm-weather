@@ -9,3 +9,7 @@ run:
   command: python app.py
   network:
     port: 8080
+  env:
+    - name: API
+      value: arn:aws:ssm:us-east-2:432367782265:parameter/openweatherapi
+    
