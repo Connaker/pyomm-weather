@@ -8,4 +8,8 @@ build:
 run: 
   command: python app.py
   network:
-    port: 8080
+    port: 5000
+  secrets:
+    - name: API
+      value-from: arn:aws:ssm:us-east-2:432367782265:parameter/openweatherapi
+    
