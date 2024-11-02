@@ -25,4 +25,4 @@ spec:
               memory: 256Mi
               cpu: "0.2"
       imagePullSecrets:
-        - name: SECRET_NAME
+        - name: aws-ecr-secret
