@@ -1,28 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    argocd.argoporj.io/instance: weatherapp
   name: weatherapp
+  namespace: weatherapp
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: weatherapp
-  replicas: 1
   template:
     metadata:
       labels:
         app: weatherapp
     spec:
       containers:
-        - name: weatherapp
-          image: 432367782265.dkr.ecr.us-east-2.amazonaws.com/devel-flask-weatherapp:latest
+        - image: >- 
+            432367782265.dkr.ecr.us-east-2.amazonaws.com/devel-flask-weatherapp:latest
+          name: weatherapp
           ports:
             - containerPort: 5000
           resources:
             limits:
-              memory: 512Mi
               cpu: "1"
+              memory: 512Mi
             requests:
-              memory: 256Mi
               cpu: "0.2"
+              memory: 256Mi
       imagePullSecrets:
         - name: aws-ecr-secret
