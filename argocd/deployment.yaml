@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - image: >- 
-            432367782265.dkr.ecr.us-east-2.amazonaws.com/devel-flask-weatherapp:latest
+            432367782265.dkr.ecr.us-east-2.amazonaws.com/flask-weatherapp:latest
           name: weatherapp
           ports:
             - containerPort: 5000
