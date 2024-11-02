@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weatherapp
+spec:
+  selector:
+    matchLabels:
+      app: weatherapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: weatherapp
+    spec:
+      containers:
+        - name: weatherapp
+          image: 432367782265.dkr.ecr.us-east-2.amazonaws.com/devel-flask-weatherapp:latest
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "1"
+            requests:
+              memory: 256Mi
+              cpu: "0.2"
+      imagePullSecrets:
+        - name: SECRET_NAME
