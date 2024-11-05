@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('SCM Checkout') {
+            steps {
+                git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
+            }
+
+            // run sonarqube test
+        }
+
+        stage('Run Sonarqube') {
+            environment {
+                scannerHome = tool 'sonarscanner';
+            }
+            steps {
+                withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+    }
+}
