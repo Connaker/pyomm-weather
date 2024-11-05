@@ -8,15 +8,15 @@ pipeline {
             }
 
             // run sonarqube test
+        }
 
-            stage('Run Sonarqube') {
-                environment {
-                    scannerHome = tool 'sonarscanner';
-                }
-                steps {
-                    withSonarQubeEnv(credentials: 'sonarqube', installationName: 'sonarqube') {
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
+        stage('Run Sonarqube') {
+            environment {
+                scannerHome = tool 'sonarscanner';
+            }
+            steps {
+                withSonarQubeEnv(credentials: 'sonarqube', installationName: 'sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
         }
