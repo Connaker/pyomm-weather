@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    tools {nodejs "node_v23"}
+    tools {nodejs "node_v18"}
 
     stages {
         stage('SCM Checkout') {
