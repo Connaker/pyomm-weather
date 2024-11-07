@@ -24,9 +24,9 @@ def internal_server_error(e):
 @app.route('/search', methods=['POST'])
 def search():
     search = request.form['response']
-    # if search == '':
-    #     e = 'Field cannot be blank'
-    #     return render_template('invalid.html', error=e)
+    if search == '':
+        e = 'Field cannot be blank'
+        return render_template('invalid.html', error=e)
     n = eval(search)
     if type(n) == int:
         if len(str(n)) == 5:
@@ -54,44 +54,24 @@ def search():
         else:
             e = 'Field is invalid Zip'
             return render_template('invalid.html', error=e)
-    elif type(n) != int:
-        location = ast.literal_eval(search)
-        mgr = owm.weather_manager()
-        observation = mgr.weather_at_place(location)
-        w = observation.weather
-        ftemp = w.temperature(unit='fahrenheit')['temp']
-        ctemp = w.temperature(unit='celsius')['temp']
-        descript = w.detailed_status
-        weather = {
-            'location': location,
-            'current': descript,
-            'ftemp': ftemp,
-            'ctemp': ctemp,
-        }
-        return render_template("city.html", weather=weather)
+    else:
+        try:
 
+            location = ast.literal_eval(search)
+            mgr = owm.weather_manager()
+            observation = mgr.weather_at_place(location)
+            w = observation.weather
+            ftemp = w.temperature(unit='fahrenheit')['temp']
+            ctemp = w.temperature(unit='celsius')['temp']
+            descript = w.detailed_status
+            weather = {
+                'location': location,
+                'current': descript,
+                'ftemp': ftemp,
+                'ctemp': ctemp,
+            }
+            return render_template("city.html", weather=weather)
 
-        #     try:
-
-        #         location = ast.literal_eval(search)
-        #         mgr = owm.weather_manager()
-        #         observation = mgr.weather_at_place(location)
-        #         w = observation.weather
-        #         ftemp = w.temperature(unit='fahrenheit')['temp']
-        #         ctemp = w.temperature(unit='celsius')['temp']
-        #         descript = w.detailed_status
-        #         weather = {
-        #             'location': location,
-        #             'current': descript,
-        #             'ftemp': ftemp,
-        #             'ctemp': ctemp,
-        #         }
-        #         return render_template("city.html", weather=weather)
-
-        #     except:
-        #         e = "Something went wrong."
-        #         return render_template("invalid.html", error=e)
-        # else:
-        #     e = "Something went wrong."
-        #     return render_template("invalid.html", error=e)
-            
+        except NotFoundError:
+            e = search, '+', 'not in regsitry. Please check your input'
+            return render_template("invalid.html", error=e)
