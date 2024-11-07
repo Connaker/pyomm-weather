@@ -1,6 +1,8 @@
 pipeline {
     agent any
 
+    tools {nodejs "node_v10"}
+
     stages {
         stage('SCM Checkout') {
             steps {
@@ -8,6 +10,12 @@ pipeline {
             }
 
             // run sonarqube test
+        }
+        
+        stage('Install Typescript') {
+            steps {
+            sh 'npm install typescript'
+                }
         }
 
         stage('Run Sonarqube') {
