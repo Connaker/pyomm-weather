@@ -9,12 +9,13 @@ import os
 
 
 def create_app():
+    csrf = CSRFProtect(app)
     app = Flask(__name__)
     owm = OWM(os.environ['API'])
     csrf.init_app(app)
     SECRET_KEY = os.urandom(32)
     app.config['SECRET_KEY'] = SECRET_KEY
-    csrf = CSRFProtect(app)
+
 
     @app.route('/')
     def index():
