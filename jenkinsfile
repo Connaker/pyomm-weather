@@ -1,4 +1,5 @@
 pipeline {
+    agent none 
     stage{
         parallel {
             stage("Sonar Scan") {
