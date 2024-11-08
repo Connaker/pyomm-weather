@@ -2,28 +2,26 @@ pipeline {
     agent any
     tools {nodejs "node_v18"}
     stages {
-        stage('SCM Checkout') {
+        stage('Checkout') {
             steps {
-                git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
+                git branch: '${params.Branch}', url: '${params.REPO}'
             }
-
-            // run sonarqube test
         }
-
         stage('Install Typescript') {
             steps {
-            sh 'npm install typescript'
-                }
+                sh 'npm install typescript'
+            }  
         }
-
-        stage('Run Sonarqube') {
+        stage('Run sonar scanner'){
             environment {
-                scannerHome = tool 'sonarscanner';
+                scannerHome=tool 'sonarscanner';
             }
             steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
-                    sh "${scannerHome}/bin/sonar-scanner"
+                withSonarQubeEv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+                    sh "${scannerHome}/bine/sonar-scanner"
                 }
             }
+        }
     }
+
 }
