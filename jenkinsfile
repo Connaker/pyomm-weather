@@ -1,74 +1,70 @@
-// pipeline {
-//     agent none 
-stage{
-    parallel {
-        stage("Sonar Scan") {
-            agent any
-            tools {nodejs "node_v18"}
-            stages {
-                stage('Checkout') {
-                    steps {
-                        git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
-                    }
-                }
+pipeline {
+    agent any
+    tools {nodejs "node_v18"}
+    stages {
+        stage('SCM Checkout') {
+            steps {
+                git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
+            }
 
-                stage('Install Typescript') {
-                    steps {
-                        sh 'npm install typescript'
-                    }  
+            // run sonarqube test
+        }
+
+        stage('Install Typescript') {
+            steps {
+            sh 'npm install typescript'
                 }
-                
-                stage('Run sonar scanner') {
-                    environment {
-                        scannerHome = tool 'sonarscanner';
-                    }
-                    steps {
-                        withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
-                            sh "${scannerHome}/bin/sonar-scanner"
-                        }
-                    }
+        }
+
+        stage('Run Sonarqube') {
+            environment {
+                scannerHome = tool 'sonarscanner';
+            }
+            steps {
+                withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
         }
-        stage("Bandit Scan") {
+
+        stage('Bandit') {
             agent {
-                docker { image 'python:3.10-slim-buster'
-                args '-u root:sudo'
+                    docker { image 'python:3.10-slim-buster'
+                    args '-u root:sudo'
+                    }
                 }
+            environment {
+                FOR_SEQUENTIAL = 'vul-scan'
             }
             stages {
                 stage("Install Bandi") {
-                    steps {
-                        sh "pip3 install bandit"
+                        steps {
+                            sh "pip3 install bandit"
+                        }
                     }
-                }
                 stage('Run Bandit Scan') {
-                    steps {
-                        git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
-                        sh label: '', returnStatus: true, script: """
-                        bandit -r -f html -o bandit_report_weatherapp.html .
-                        """
-                    }
-                }
+                        steps {
+                            git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
+                            sh label: '', returnStatus: true, script: """
+                            bandit -r -f html -o bandit_report_weatherapp.html .
+                            """
+                        }
+                        }
                 stage('Run Bandit Baseline Scan') {
-                    steps {
-                        sh label: '', returnStatus: true, script: """
-                        bandit -r -f json -o bandit_report_weatherapp.json .
-                        """
+                        steps {
+                            sh label: '', returnStatus: true, script: """
+                            bandit -r -f json -o bandit_report_weatherapp.json .
+                            """
+                        }
                     }
-                }
                 stage ('Archive report') {
-                    steps {
-                        archiveArtifacts artifacts: 'bandit_*.*'
-                        deleteDir()
+                        steps {
+                            archiveArtifacts artifacts: 'bandit_*.*'
+                            deleteDir()
+                        }
                     }
-                }
             }
-            
+
         }
-
-
     }
 }
-
-// }
