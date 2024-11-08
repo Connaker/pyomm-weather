@@ -1,13 +1,22 @@
+properties([parameters(
+[string(defaultValue: 'NameofScan', description: 'Use only alphabets, without space', name: 'SCAN_NAME', trim: true), string(defaultValue: 'git@abc.com:test/repo1.git', description: 'Enter the "Clone with SSH" url', name: 'REPO', trim: true), 
+string(defaultValue: 'dev', description: 'Select the release branch to run scans for particular release', name: 'Branch', trim: true), 
+choice(choices: ['YES', 'NO'], description: 'Run normal scan', name: 'NORMAL_SCAN'),
+choice(choices: ['YES', 'NO'], description: 'Run baseline scan to hide previous found issues. If you choose YES you MUST upload baseline json file in next step.', name: 'BASELINE_SCAN'), 
+file(description: 'Upload the bandit baseline json file to ignore old issues', name: 'BASELINE_JSON'), 
+choice(choices: ['YES', 'NO'], description: 'Choose YES to generate baseline json file, which can be uploaded next time you run the scan to hide issues found in this scan.', name: 'CREATE_BASELINE')
+])])
+
 pipeline {
     agent {
-        docker { image 'python3.10-slim-buster'
-                 args '-u root:sudo'}
+        docker { image 'python:2.7.17'
+                 args '-u root:sudo'
+            }
     }
-
     stages {
-        stage ('nstall Bandit') {
+        stage('Install Bandit') {
             steps {
-                sh "pip3 install bandit"
+                sh "pip install bandit"
             }
         }
         stage ('Run Bandit Scan') {
@@ -17,18 +26,22 @@ pipeline {
             steps {
                 timestamps{ echo ">>>>>>>>>>Running bandit on repo ${params.repo}>>>>>>>>>>>>>>>>>>>>" }
                 git branch: "${params.Branch}", 
+                credentialsId: "****",
                 url: "${params.REPO}"
                 sh label: '', returnStatus: true, script: """
                         bandit -r -f html -o bandit_report_${params.SCAN_NAME}.html .
                         """
                 }
-            stage ('Run Bandit Baseline Scan') {
+        }
+
+        stage ('Run Bandit Baseline Scan') {
             when { 
                 expression {params.BASELINE_SCAN == "YES"}
             }
             steps {
                 timestamps{ echo ">>>>>>>>>>Running bandit baseline scan on repo ${params.REPO}>>>>>>>>>>>>>>>>>>>>" }
                 git branch: "${params.Branch}", 
+                credentialsId: "****",
                 url: "${params.REPO}"
                 script{
                     @Library('jenkinsci-unstashParam-library@master') _
@@ -54,35 +67,6 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: 'bandit_*.*'
                 deleteDir()   
-            }
-        }
-        }
-    }
-    agent any
-    tools {nodejs "node_v18"}
-    stages {
-        stage('SCM Checkout') {
-            steps {
-                git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
-            }
-
-            // run sonarqube test
-        }
-
-        stage('Install Typescript') {
-            steps {
-            sh 'npm install typescript'
-                }
-        }
-
-        stage('Run Sonarqube') {
-            environment {
-                scannerHome = tool 'sonarscanner';
-            }
-            steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
             }
         }
     }
