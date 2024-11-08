@@ -18,7 +18,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
-                    sh "${scannerHome}/bine/sonar-scanner"
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
         }
