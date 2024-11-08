@@ -27,7 +27,7 @@ def search():
     if search == '':
         e = 'Field cannot be blank'
         return render_template('invalid.html', error=e)
-    n = eval(search)
+    n = ast.literal_eval(search)
     if isinstance(n,int):
         if len(str(n)) == 5:
             zcdb = ZipCodeDatabase()
