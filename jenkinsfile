@@ -1,8 +1,65 @@
 pipeline {
+    agent {
+        docker { image 'python3.10-slim-buster'
+                 args '-u root:sudo'}
+    }
+
+    stages {
+        stage ('nstall Bandit') {
+            steps {
+                sh "pip3 install bandit"
+            }
+        }
+        stage ('Run Bandit Scan') {
+            when { 
+                expression {params.NORMAL_SCAN == "YES"}
+            }
+            steps {
+                timestamps{ echo ">>>>>>>>>>Running bandit on repo ${params.repo}>>>>>>>>>>>>>>>>>>>>" }
+                git branch: "${params.Branch}", 
+                url: "${params.REPO}"
+                sh label: '', returnStatus: true, script: """
+                        bandit -r -f html -o bandit_report_${params.SCAN_NAME}.html .
+                        """
+                }
+            stage ('Run Bandit Baseline Scan') {
+            when { 
+                expression {params.BASELINE_SCAN == "YES"}
+            }
+            steps {
+                timestamps{ echo ">>>>>>>>>>Running bandit baseline scan on repo ${params.REPO}>>>>>>>>>>>>>>>>>>>>" }
+                git branch: "${params.Branch}", 
+                url: "${params.REPO}"
+                script{
+                    @Library('jenkinsci-unstashParam-library@master') _
+                    def file_in_workspace = unstashParam "BASELINE_JSON"
+                    sh label: '', returnStatus: true, script: """
+                    bandit -r -f html -o bandit_report_${params.SCAN_NAME}.html -b ${file_in_workspace} .
+                    """
+                    sh "rm -rf ${file_in_workspace}"
+                }
+            }
+        }
+        stage ('Create Bandit baseline') {
+            when { 
+                expression {params.CREATE_BASELINE == "YES"}
+            }
+            steps {
+                sh label: '', returnStatus: true, script: """
+                    bandit -r -f json -o bandit_baseline_${params.SCAN_NAME}.json .
+                    """
+            }
+        }
+        stage ('Archive report') {
+            steps {
+                archiveArtifacts artifacts: 'bandit_*.*'
+                deleteDir()   
+            }
+        }
+        }
+    }
     agent any
-
     tools {nodejs "node_v18"}
-
     stages {
         stage('SCM Checkout') {
             steps {
