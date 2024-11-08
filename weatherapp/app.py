@@ -28,7 +28,7 @@ def search():
         e = 'Field cannot be blank'
         return render_template('invalid.html', error=e)
     n = eval(search)
-    if type(n) == int:
+    if isinstance(n,int):
         if len(str(n)) == 5:
             zcdb = ZipCodeDatabase()
             city = zcdb[n].city
