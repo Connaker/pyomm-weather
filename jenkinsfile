@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: '${params.Branch}', url: '${params.REPO}'
+                git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
             }
         }
         stage('Install Typescript') {
