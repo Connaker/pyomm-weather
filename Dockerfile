@@ -1,7 +1,6 @@
 FROM  python:3.10-slim-buster
 
-RUN adduser -D worker 
-RUN pip install --upgrade
+RUN pip install --upgrade && useradd -D worker
 USER worker
 WORKDIR /app
 COPY --chown=worker:worker ./requirements.txt .
