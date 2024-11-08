@@ -7,17 +7,19 @@ pipeline {
                 git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
             }
         }
+
         stage('Install Typescript') {
             steps {
                 sh 'npm install typescript'
             }  
         }
-        stage('Run sonar scanner'){
+        
+        stage('Run sonar scanner') {
             environment {
-                scannerHome=tool 'sonarscanner';
+                scannerHome = tool 'sonarscanner';
             }
             steps {
-                withSonarQubeEv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+                withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
                     sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
