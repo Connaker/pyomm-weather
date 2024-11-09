@@ -13,6 +13,10 @@ app.config['SECRET_KEY'] = SECRET_KEY
 csrf = CSRFProtect(app)
 owm = OWM(os.environ['API'])
 
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html')
+
 @app.route('/')
 def index():
     return render_template('weather.html')
@@ -30,45 +34,23 @@ def search():
             zcdb = ZipCodeDatabase()
             city = zcdb[n].city
             state = zcdb[n].state
-            place = city+','+state+','+"US"
-            mgr = owm.weather_manager()
-            observation = mgr.weather_at_place(place)
-            w = observation.weather
-            ftemp = w.temperature(unit='fahrenheit')['temp']
-            ctemp = w.temperature(unit='celsius')['temp']
-            descript = w.detailed_status
-
-            weather = {
-                'zipcode': n,
-                'current': descript,
-                'city': city,
-                'state': state,
-                'place': place,
-                'ftemp': ftemp,
-                'ctemp': ctemp,
-            }
-            return render_template("zip.html", weather=weather)
+            location = city+','+state+','+"US"
         else:
             e = 'Field is invalid Zip'
             return render_template('invalid.html', error=e)
     else:
-        try:
+            location = n
 
-            location = ast.literal_eval(search)
-            mgr = owm.weather_manager()
-            observation = mgr.weather_at_place(location)
-            w = observation.weather
-            ftemp = w.temperature(unit='fahrenheit')['temp']
-            ctemp = w.temperature(unit='celsius')['temp']
-            descript = w.detailed_status
-            weather = {
-                'location': location,
-                'current': descript,
-                'ftemp': ftemp,
-                'ctemp': ctemp,
-            }
-            return render_template("city.html", weather=weather)
-
-        except NotFoundError:
-            e = search, '+', 'not in regsitry. Please check your input'
-            return render_template("invalid.html", error=e)
+    mgr = owm.weather_manager()
+    observation = mgr.weather_at_place(location)
+    w = observation.weather
+    ftemp = w.temperature(unit='fahrenheit')['temp']
+    ctemp = w.temperature(unit='celsius')['temp']
+    descript = w.detailed_status
+    weather = {
+            'location': location,
+            'current': descript,
+            'ftemp': ftemp,
+            'ctemp': ctemp,
+    }
+    return render_template("city.html", weather=weather)
