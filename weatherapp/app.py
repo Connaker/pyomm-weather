@@ -44,9 +44,8 @@ def search():
         else:
             e = 'Field is invalid Zip'
             return render_template('invalid.html', error=e)
-    try: place
-    except NameError: place = search
-    if place is search:
+    if place is None:
+        place = search
         weather.update ({
             'location': place,
         })
