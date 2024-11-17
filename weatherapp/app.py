@@ -1,5 +1,4 @@
 from pyowm import OWM
-from pyowm.commons.exceptions import NotFoundError
 from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
 from pyzipcode import ZipCodeDatabase

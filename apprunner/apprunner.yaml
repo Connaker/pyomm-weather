@@ -12,4 +12,3 @@ run:
   secrets:
     - name: API
       value-from: arn:aws:ssm:us-east-2:432367782265:parameter/openweatherapi
-    
