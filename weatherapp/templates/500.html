@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather App</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     body {
       padding: 20px;
@@ -12,10 +11,7 @@
     .weather-card {
       max-width: 400px;
       margin: 0 auto;
-      background-color: #f7f7f7;
       padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .weather-icon {
             max-width: 100px;
@@ -27,7 +23,7 @@
     <body>
         <div class="container">
             <div class="weather-card">
-                <em>{{ error }}</em>
+                <img src="{{url_for('static', filename='500.jpg')}}" alt="500 error" height=500px, width=500px />
             </div>
         </div>
     </body>

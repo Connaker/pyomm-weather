@@ -1,5 +1,7 @@
 gunicorn==23.0.0
 Flask==3.0.1
+Flask-WTF==1.2.2
 requests==2.23.0
+pillow==11.0.0 
 pyowm==3.0.0
 pyzipcode==3.0.1

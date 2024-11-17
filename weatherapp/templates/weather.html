@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather App</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     body {
       padding: 20px;
@@ -26,6 +25,7 @@
           <div class="form-group">
             <label for="location-input">Location:</label>
             <input autocomplete="off" autofocus name="response" type="text" class="form-control" id="location-input" placeholder="Ex: New York,NY,US or Zip Code">
+            <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" /> 
           </div>
           <button type="submit" class="btn btn-primary">Search</button>
         </form>
