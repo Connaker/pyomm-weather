@@ -1,12 +1,34 @@
-FROM  python:3.10-slim-buster
+FROM python:3.10-slim-buster AS builder
 
-RUN useradd -ms /bin/bash worker
-USER worker
 WORKDIR /app
-COPY --chown=worker:worker ./weatherapp/requirements.txt .
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
-ENV PATH="/home/worker/.local/bin:${PATH}"
-COPY --chown=worker:worker ./weatherapp .
-EXPOSE 5000
+RUN apt-get update && apt-get install -y --no-install-recommends gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-CMD ["gunicorn", "wsgi:app", "-b", "0.0.0.0:5000"]
+COPY ./weatherapp/requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+
+FROM python:3.10-slim-buster
+
+WORKDIR /app
+RUN useradd -ms /bin/bash worker && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends wget && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/wheels /wheels
+COPY --from=builder /app/requirements.txt .
+
+RUN pip install --no-cache /wheels/*
+
+USER worker
+ENV PATH="/home/worker/.local/bin:${PATH}"
+
+COPY --chown=worker:worker ./weatherapp .
+
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD ["wget", "-q", "--spider http://localhost:5000/health || exit 1"]
+
+ARG GUNICORN_WORKERS=2
+ENV WORKERS=${GUNICORN_WORKERS}
+
+EXPOSE 5000
