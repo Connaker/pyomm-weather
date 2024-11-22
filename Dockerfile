@@ -32,3 +32,4 @@ ARG GUNICORN_WORKERS=2
 ENV WORKERS=${GUNICORN_WORKERS}
 
 EXPOSE 5000
+CMD ["sh", "-c", "gunicorn wsgi:app -b 0.0.0.0:5000 -w ${WORKERS}"]
