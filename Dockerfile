@@ -1,7 +1,7 @@
 FROM python:3.10-slim-buster AS builder
 
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends gcc \
+RUN apt-get update && apt-get install -y --no-install-recommends gcc awscli\
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./weatherapp/requirements.txt .
@@ -23,7 +23,7 @@ RUN pip install --no-cache /wheels/*
 USER worker
 ENV PATH="/home/worker/.local/bin:${PATH}"
 
-COPY --chown=worker:worker ./weatherapp .
+COPY --chown=worker:worker ./weatherapp/v2 .
 
 HEALTHCHECK --interval=30s --timeout=3s \
     CMD ["wget", "-q", "--spider http://localhost:5000/health || exit 1"]

@@ -3,3 +3,6 @@ __pycache__/
 api.txt
 build.sh
 .terraform
+db_create.py
+config
+credentials

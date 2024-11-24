@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    body {
+      padding: 20px;
+    }
+    .weather-card {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #f7f7f7;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .weather-icon {
+            max-width: 100px;
+            margin: 0 auto;
+            display: block;
+    }
+    </style>
+    </head>
+    <body>
+        <div class="container">
+        <div class="weather-card">
+            <h1 class="text-center">Current Weather</h1>
+            <p>
+                <span class="subtitle">Zipcode: {{weather.zipcode}} </span> <br>
+                <span class="subtitle">Condition: {{weather.current}} </span> <br>
+                <span class="subtitle">City: {{weather.city}} </span> <br>
+                <span class="subtitle">State: {{weather.state}} </span> <br>
+                <span class="subtitle">Temperature in Farhenheit: {{weather.ftemp}} </span> <br>
+                <span class="subtitle">Temperature in Celsius: {{weather.ctemp}} </span> <br>
+
+            </p>
+        </div>
+        </div>
+    </body>
+</html>
