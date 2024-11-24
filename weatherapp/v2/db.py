@@ -11,6 +11,7 @@ now = datetime.now(cst)
 current_date = now.strftime('%Y-%m-%d')
 current_time = now.strftime('%H:%M:%S')
 
+
 def write_to_weather(location,current,ftemp,ctemp):
     result = location.split(",")
     if len(result) == 3:
@@ -30,9 +31,9 @@ def write_to_weather(location,current,ftemp,ctemp):
                     'ftemp': ftemp,
                     'ctemp': ctemp,
                     'date': current_date,
-                    'time': current_time
+                    'time': current_time,
                 }
             )
+        return response
     except ClientError as e:
         print(f"Error: {e.response['Error']['Message']}")
-    return response
