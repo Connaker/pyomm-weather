@@ -2,6 +2,7 @@ import boto3
 import pytz
 from datetime import datetime
 from botocore.exceptions import ClientError
+import sys
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('weather')
@@ -13,6 +14,7 @@ current_time = now.strftime('%H:%M:%S')
 
 
 def write_to_weather(location,current,ftemp,ctemp):
+    print(location,current,ftemp,ctemp, file=sys.stderr)
     result = location.split(",")
     if len(result) == 3:
         city, state, country = result

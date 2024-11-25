@@ -4,6 +4,7 @@ from flask_wtf.csrf import CSRFProtect
 from pyzipcode import ZipCodeDatabase
 import db as dynamodb
 import os
+import sys
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24).hex()
@@ -37,6 +38,21 @@ def get_location(zip_code):
     country = 'US'
     return f"{city}, {state}, {country}"
 
+def santize(location):
+    location = location.split(',')
+      
+    if len(location) == 2:
+        return f"{location[0].strip()}, {location[1].strip()}"
+    
+    if len(location) >= 3:
+        formatted_location = [location[0].strip()]
+        formatted_location.append(f" {location[1].strip()}")
+        formatted_location.append(f" {location[2].strip()}")
+
+        if len(location) > 3:
+            formatted_location.extend(location[3:])
+        return ','.join(formatted_location)
+    return location
 
 @app.errorhandler(500)
 def internal_server_error(e):
@@ -55,6 +71,7 @@ def weather():
                 location = get_location(location)
             except KeyError:
                     raise ValueError("Invalid ZIP code provided.")
+        location=santize(location)
         ftemp, ctemp, icon_url, descript = get_weather(location)
         weather = {
                 'location': location,
@@ -71,7 +88,9 @@ def weather():
         return render_template(error, error=str(e))
 
 def add_weather(weather):
+    print(weather, file=sys.stderr)
     response = dynamodb.write_to_weather(weather['location'],weather['current'],weather['ftemp'],weather['ctemp'])
+    print(response, file=sys.stderr)
     if (response['ResponseMetadata']['HTTPStatusCode'] != 200):
         return render_template('error.html', message="Failed to save weather data to DynamoDB.")
     return response 
