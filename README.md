@@ -4,7 +4,7 @@ version: 1.0.0
 
 ## About this Project
 
-> This program retrives the weather based on a Zipcode, City and Country or City, State and Country.
+> This program retrives the weather based on a Zipcode, City and Country or City, State and Country. Built to run on AWS Apprunner. See image and website below
 
 ## Diagram
 
@@ -15,8 +15,7 @@ version: 1.0.0
 website: https://weatherapp.connaker.org/
 
 ## Built with
-
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)
 ![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=fff)
 ![Flask](https://img.shields.io/badge/Flask-000?logo=flask&logoColor=fff)
