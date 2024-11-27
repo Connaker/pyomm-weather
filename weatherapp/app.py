@@ -6,6 +6,17 @@ import ast
 import os
 
 
+"""
+    This program retrives the weather based on a Zipcode, City and Country or City, State and Country.
+
+    This program is broken into 3 functions
+                                                                                                        !
+    internal_server_error: Renders 500 error page if program recieves a 500 error handler
+    index: Renders the weather.html
+    search: Retrieves POST data from weather.html form. Gets Location from Zip code and weather from
+             the location.
+"""
+
 SECRET_KEY = os.urandom(32)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -23,6 +34,15 @@ def index():
 
 @app.route('/search', methods=['POST'])
 def search():
+
+    """
+        Function recieves the location from form.
+        Runs through basic IF to verify variable has data
+        Second IF verifies if it is a Zipcode. If it is, uses pyzipcode to retrieve City, State.
+        Lastly, gathers weather information from location using pyowm.
+        Renders data to city.html
+    """
+
     search = request.form['response']
     if search == '':
         e = 'Field cannot be blank'
