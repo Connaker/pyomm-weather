@@ -76,16 +76,22 @@ pipeline {
         DOCKER_TAG = 'v2.0.1'
     }
     stages {
-        stage('SCM Checkout') {
+        stage('Checkout') {
             steps {
+                // Checkout code from repository
                 checkout scm
             }
         }
+        
         stage('Build Docker Image') {
             steps {
-                docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "-f Dockerfile .")
+                script {
+                    // Build the Docker image
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "-f Dockerfile .")
+                }
             }
         }
+        
         stage('Push to Harbor Repository') {
             steps {
                 sh 'docker tag Dockerfile[v2.0.1] 192.168.4.204/weatherapp/REPOSITORY[v2.0.1]'
