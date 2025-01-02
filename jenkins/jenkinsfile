@@ -98,6 +98,7 @@ pipeline {
         stage('Push to Harbor Repository') {
             steps {
                 sh """
+                    echo \${env.HARBOR_USER_PSW} | docker login ${HARBOR_REGISTRY} -u \${env.HARBOR_USER_USR} --password-stdin
                     docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${DOCKER_IMAGE}:${DOCKER_TAG}
                     docker push ${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${DOCKER_IMAGE}:${DOCKER_TAG}
                 """
@@ -108,9 +109,8 @@ pipeline {
             steps {
 
                 sh """
-                    echo \${env.HARBOR_USER_PSW} | docker login ${HARBOR_REGISTRY} -u \${env.HARBOR_USER_USR} --password-stdin
-                    docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${DOCKER_IMAGE}:${DOCKER_TAG}
-                    docker push ${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${DOCKER_IMAGE}:${DOCKER_TAG}
+                    docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    docker rmi ${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${DOCKER_IMAGE}:${DOCKER_TAG}
                 """
             }
         }
