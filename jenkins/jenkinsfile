@@ -75,7 +75,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'weatherapp'
         DOCKER_TAG = 'v2.0.1'
-        HARBOR_REGISTRY = '192.168.4.204'
+        HARBOR_REGISTRY = '192.168.4.204:80'
         HARBOR_PROJECT = 'weatherapp'
         HARBOR_USER = credentials('harbor-login') 
     }
