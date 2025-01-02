@@ -91,13 +91,13 @@ pipeline {
                 }
             }
         }
-        
-        stage('Push to Harbor Repository') {
-            steps {
-                sh 'docker tag Dockerfile[v2.0.1] 192.168.4.204/weatherapp/REPOSITORY[v2.0.1]'
-                sh 'docker push 192.168.4.204/weatherapp/REPOSITORY[v2.0.1]'
-            }
-        }
+
+        // stage('Push to Harbor Repository') {
+        //     steps {
+        //         sh 'docker tag Dockerfile[v2.0.1] 192.168.4.204/weatherapp/REPOSITORY[v2.0.1]'
+        //         sh 'docker push 192.168.4.204/weatherapp/REPOSITORY[v2.0.1]'
+        //     }
+        // }
     }
 }
 
