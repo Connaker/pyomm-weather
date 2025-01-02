@@ -81,18 +81,7 @@ pipeline {
     }
     
     stages {
-        stage('Configure Docker') {
-            steps {
-                sh '''
-                    # Create or modify daemon.json to allow insecure registry
-                    echo '{"insecure-registries": ["192.168.4.204:80"]}' | sudo tee /etc/docker/daemon.json
-                    # Restart Docker daemon
-                    sudo systemctl restart docker
-                    # Wait for Docker to be ready
-                    sleep 10
-                '''
-            }
-        }
+        
         stage('Checkout') {
             steps {
                 checkout scm
