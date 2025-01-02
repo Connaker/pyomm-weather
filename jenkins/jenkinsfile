@@ -1,70 +1,83 @@
+// pipeline {
+//     agent any
+//     tools {nodejs "node_v18"}
+//     stages {
+//         stage('SCM Checkout') {
+//             steps {
+//                 git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
+//             }
+
+//             // run sonarqube test
+//         }
+
+//         stage('Install Typescript') {
+//             steps {
+//             sh 'npm install typescript'
+//                 }
+//         }
+
+//         stage('Run Sonarqube') {
+//             environment {
+//                 scannerHome = tool 'sonarscanner';
+//             }
+//             steps {
+//                 withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
+//                     sh "${scannerHome}/bin/sonar-scanner"
+//                 }
+//             }
+//         }
+
+//         stage('Bandit') {
+//             agent {
+//                     docker { image 'python:3.10-slim-buster'
+//                     args '-u root:sudo'
+//                     }
+//                 }
+//             environment {
+//                 FOR_SEQUENTIAL = 'vul-scan'
+//             }
+//             stages {
+//                 stage("Install Bandi") {
+//                         steps {
+//                             sh "pip3 install bandit"
+//                         }
+//                     }
+//                 stage('Run Bandit Scan') {
+//                         steps {
+//                             git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
+//                             sh label: '', returnStatus: true, script: """
+//                             bandit -r -f html -o bandit_report_weatherapp.html .
+//                             """
+//                         }
+//                         }
+//                 stage('Run Bandit Baseline Scan') {
+//                         steps {
+//                             sh label: '', returnStatus: true, script: """
+//                             bandit -r -f json -o bandit_report_weatherapp.json .
+//                             """
+//                         }
+//                     }
+//                 stage ('Archive report') {
+//                         steps {
+//                             archiveArtifacts artifacts: 'bandit_*.*'
+//                             deleteDir()
+//                         }
+//                     }
+//             }
+
+//         }
+//     }
+// }
+
 pipeline {
     agent any
     tools {nodejs "node_v18"}
     stages {
         stage('SCM Checkout') {
             steps {
-                git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
+                sh 'docker tag Dockerfile[v2.0.1] 192.168.4.204/weatherapp/REPOSITORY[v2.0.1]'
+                sh 'docker push 192.168.4.204/weatherapp/REPOSITORY[v2.0.1]'
             }
-
-            // run sonarqube test
-        }
-
-        stage('Install Typescript') {
-            steps {
-            sh 'npm install typescript'
-                }
-        }
-
-        stage('Run Sonarqube') {
-            environment {
-                scannerHome = tool 'sonarscanner';
-            }
-            steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube', installationName: 'sonarqube') {
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-            }
-        }
-
-        stage('Bandit') {
-            agent {
-                    docker { image 'python:3.10-slim-buster'
-                    args '-u root:sudo'
-                    }
-                }
-            environment {
-                FOR_SEQUENTIAL = 'vul-scan'
-            }
-            stages {
-                stage("Install Bandi") {
-                        steps {
-                            sh "pip3 install bandit"
-                        }
-                    }
-                stage('Run Bandit Scan') {
-                        steps {
-                            git branch: 'devel', url: 'https://github.com/Connaker/pyowm-weatherapp.git'
-                            sh label: '', returnStatus: true, script: """
-                            bandit -r -f html -o bandit_report_weatherapp.html .
-                            """
-                        }
-                        }
-                stage('Run Bandit Baseline Scan') {
-                        steps {
-                            sh label: '', returnStatus: true, script: """
-                            bandit -r -f json -o bandit_report_weatherapp.json .
-                            """
-                        }
-                    }
-                stage ('Archive report') {
-                        steps {
-                            archiveArtifacts artifacts: 'bandit_*.*'
-                            deleteDir()
-                        }
-                    }
-            }
-
         }
     }
 }
